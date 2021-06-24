@@ -27,6 +27,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // Obs: https://stackoverflow.com/questions/63807930/target-class-controller-does-not-exist-laravel-8
 
+/** MOVIES */
 // List movies
 Route::get('movie', [MovieController::class, 'index']);
 
@@ -41,3 +42,8 @@ Route::put('movie/{id}', [MovieController::class, 'update']);
 
 // Delete movie
 Route::delete('movie/{id}', [MovieController::class, 'destroy']);
+
+/** USERS */
+Route::get("user", [UserController::class, 'show']);
+Route::post("login", [UserController::class, 'login']);
+

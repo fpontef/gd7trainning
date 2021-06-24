@@ -19,6 +19,11 @@ class MovieController extends Controller
         $movies = Movie::paginate(5);
         return MovieResource::collection($movies);
     }
+    public function indexweb()
+    {
+        $movies = Movie::all();
+        return view('movieslist', compact('movies'));
+    }
 
     // /**
     //  * Show the form for creating a new resource.
@@ -47,6 +52,10 @@ class MovieController extends Controller
         $movie->details = $request->input('details');
         $movie->genre_id = $request->input('genre_id');
         $movie->url = $request->input('url');
+
+        if($movie -> save()) {
+            return new MovieResource($movie);
+        }
     }
 
     /**

@@ -14,20 +14,12 @@ extension=pdo_mysql
 php artisan make:migration create_table_users --create=users
 ```
 
-# Banco de Dados
-
-## Usando Docker:
-
-```console
-
-```
-
 # Regras do Laravel aplicadas:
 
 - 'Movie' quando trata de entidade, fica no singular.
 
 # Comandos úteis:
-
+```console
 php artisan serve
 
 php artisan migrate
@@ -39,3 +31,4 @@ php artisan tinker ....
 (no tinker) \App\Models\Movie::all()
 
 php artisan make:controller Api/MovieController
+```

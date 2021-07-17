@@ -6,6 +6,7 @@ use App\Models\User as User;
 use App\Http\Resources\User as UserResource;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -16,11 +17,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        // $users = User::all();
-        // return response()->json($users);
+        // $users = User::paginate(5);
+        // return UserResource::collection($users);
 
-        $users = User::paginate(5);
-        return UserResource::collection($users);
+        $users = User::all();
+        return response()->json($users);
+
     }
 
     /**
@@ -34,8 +36,14 @@ class UserController extends Controller
         $user = new User;
         $user->name = $request->input('name');
         $user->email = $request->input('email');
-        $user->password = $request->input('password');
+        $hashedPassword = Hash::make($request->input('password'));
+        $user->password = $hashedPassword;
         $user->role = $request->input('role');
+
+
+        if($user -> save()) {
+            return new UserResource($user);
+        }
     }
 
     /**
@@ -76,7 +84,8 @@ class UserController extends Controller
         $user = User::findOrFail($request->id);
         $user->name = $request->input('name');
         $user->email = $request->input('email');
-        $user->password = $request->input('password');
+        $hashedPassword = Hash::make($request->input('password'));
+        $user->password = $hashedPassword;
         $user->role = $request->input('role');
 
         if($user -> save()) {

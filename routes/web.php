@@ -14,6 +14,7 @@ use App\Http\Controllers\MovieController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Broadcast::routes(['middleware' => 'web']); // this works for my Laravel website
 
 Route::get('/', function () {
     // return view('welcome');
@@ -27,8 +28,8 @@ Route::view("movie", "movieslist");
 Route::view("addmovie", "addmovie");
 
 //  /user
-Route::post("user", [UserController::class, 'login']);
+Route::post("auth/user", [UserController::class, 'login']);
 
 //  /movie
-Route::get("movie", [MovieController::class,'indexweb']);
+Route::get("movie", [MovieController::class,'index']);
 Route::post("movie", [MovieController::class, 'store']);

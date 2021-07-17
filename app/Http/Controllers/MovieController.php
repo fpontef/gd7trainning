@@ -14,15 +14,31 @@ class MovieController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $movies = Movie::paginate(5);
-        return MovieResource::collection($movies);
-    }
-    public function indexweb()
-    {
+
+        // OBSERVACOES
+        //$movies = auth('api')->user()->metodo_provider_ou_model();
+        //$data['user_id'] = auth('api')->user()->id;
+        // $data['user_role'] = auth('api')->user()->role;
+        // $data = auth('api')->user()->role;
+
         $movies = Movie::all();
-        return view('movieslist', compact('movies'));
+
+        if($request->is('api/*')) {
+            // api logic
+            // Se quiser paginação:
+            // $movies = Movie::paginate(5);
+            return MovieResource::collection($movies);
+
+            // Provando que o role é visível, porém é melhor num middleware
+            // return response()->json([
+            //     'ROLE' => $data
+            // ]);
+        } else {
+            // web logic
+            return view('movieslist', compact('movies'));
+        }
     }
 
     // /**
@@ -54,7 +70,11 @@ class MovieController extends Controller
         $movie->url = $request->input('url');
 
         if($movie -> save()) {
-            return new MovieResource($movie);
+            if($request->is('api/*')) {
+                return new MovieResource($movie);
+            } else {
+                return redirect('/movie');
+            }
         }
     }
 

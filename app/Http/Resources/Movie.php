@@ -17,6 +17,7 @@ class Movie extends JsonResource
         // para retornar todos do array do banco
         // return parent::toArray($request);
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'part' => $this->part,
             'image_url' => $this->image_url,

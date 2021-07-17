@@ -1,5 +1,5 @@
 <h1>Login</h1>
-<form action="user" method="POST">
+<form action="auth/user" method="POST">
   @csrf
   <input type="text" name="email" placeholder="Informe seu email."/>
   <br><br>

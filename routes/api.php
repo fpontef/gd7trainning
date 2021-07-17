@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
+
 
 
 /*
@@ -17,18 +20,45 @@ use App\Http\Controllers\MovieController;
 |
 */
 
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::get('/v1', function(){
-//     return ['status' => true ];
-// });
+/*
+* Usando Middleware para proteger rotas no jwt.auth:
+* Route::get('rota', [Classe, 'recurso'])->middleware('jwt.auth');
+*/
 
-// Obs: https://stackoverflow.com/questions/63807930/target-class-controller-does-not-exist-laravel-8
+/** AUTH */
+Route::post('auth/login', [AuthController::class, 'login']);
+Route::post('auth/logout', [AuthController::class, 'logout']);
+Route::post('auth/refresh', [AuthController::class, 'refresh']);
+Route::post('auth/me', [AuthController::class, 'me']);
+
+// Route::get('user', [UserController::class, 'show']);
+// Route::post('login', [UserController::class, 'login']);
+
+/** USERS */
+// List users
+Route::get('user', [UserController::class, 'index']);
+
+// List one user
+Route::get('user/{id}', [UserController::class, 'show']);
+
+// Create new user
+Route::post('user', [UserController::class, 'store']);
+
+// Update user
+Route::put('user/{id}', [UserController::class, 'update']);
+
+// Delete user
+Route::delete('user/{id}', [UserController::class, 'destroy']);
 
 /** MOVIES */
 // List movies
+// Versão com o middleware exige autenticação:
+// Route::get('movie', [MovieController::class, 'index'])->middleware('jwt.auth');
 Route::get('movie', [MovieController::class, 'index']);
 
 // List one movie
@@ -42,8 +72,4 @@ Route::put('movie/{id}', [MovieController::class, 'update']);
 
 // Delete movie
 Route::delete('movie/{id}', [MovieController::class, 'destroy']);
-
-/** USERS */
-Route::get("user", [UserController::class, 'show']);
-Route::post("login", [UserController::class, 'login']);
 

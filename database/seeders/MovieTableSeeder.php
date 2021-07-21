@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MovieTableSeeder extends Seeder
 {
@@ -14,5 +15,11 @@ class MovieTableSeeder extends Seeder
     public function run()
     {
         // factory(\App\Movie::class, 4)->create();
+
+        DB::table('movies')->insert([
+            [
+                'title'=>'Test Title',
+            ]
+        ]);
     }
 }

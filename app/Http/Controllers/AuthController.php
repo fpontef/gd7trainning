@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Session;
 
 class AuthController extends Controller
 {
@@ -13,13 +14,31 @@ class AuthController extends Controller
 
         // return response()->json(auth('api')->attempt(["email" => "admin@asd.com", "password"=>"123456"]));
 
-        if ( !$token = auth('api')->attempt($credentials) ) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        if($request->is('api/*')) {
+            if ( !$token = auth('api')->attempt($credentials) ) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
 
-        return response()->json([
-            'token' => $token
-        ]);
+            return response()->json([
+                'token' => $token
+            ]);
+        } else {
+            if ( !$token = auth('api')->attempt($credentials) ) {
+                session()->forget('user');
+                session()->put('message', 'Usuário ou senha incorreta.');
+                return redirect('login');
+            }
+
+            // Old put that worked before.
+            // $request->session()->put('token', $token);
+
+            // Get User info (name/login/role if exists)
+            $user = auth('api')->user();
+            $request->session()->put('user', $user);
+            session()->forget('message');
+
+            return redirect('/')->with('message', 'Usuário ou senha incorreta.');
+        }
     }
 
     /**
@@ -41,7 +60,13 @@ class AuthController extends Controller
     {
         auth('api')->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        if($request->is('api/*')) {
+
+            return response()->json(['message' => 'Successfully logged out']);
+        } else {
+            session()->forget('user');
+            return redirect('login');
+        }
     }
 
     /**

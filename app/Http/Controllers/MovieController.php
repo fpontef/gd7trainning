@@ -37,7 +37,7 @@ class MovieController extends Controller
             // ]);
         } else {
             // web logic
-            return view('movieslist', compact('movies'));
+            return view('movielist', compact('movies'));
         }
     }
 

@@ -57,27 +57,25 @@ class UserController extends Controller
         }
     }
 
-    /* LOGIN */
-    // public function login(Request $request)
-    // {
-    //     // $user = User::findOrFail($request->email);
-    //     $user = new User;
-    //     $user->email = $request->input('email');
-    //     $user->password = $request->input('password');
-    //     // return $user;
-    //     return $request->input();
-    // }
-
-    public function show($id)
+    public function show($id, Request $request)
     {
         $user = User::findOrFail($id);
+
         if($request->is('api/*')) {
 
         return new UserResource($user);
         } else {
-            return view('userdetails', ['user'=>$data]);
+          return view('usershow',compact('user'));
         }
     }
+
+    public function edit($id)
+    {
+      $user = User::findOrFail($id);
+
+      return view('edituser',compact('user'));
+    }
+
 
     public function update(Request $request, $id)
     {
@@ -88,16 +86,30 @@ class UserController extends Controller
         $user->password = $hashedPassword;
         $user->role = $request->input('role');
 
-        if($user -> save()) {
+        if($request->is('api/*')) {
+          if($user -> save()) {
             return new UserResource($user);
+          }
+        }
+        else {
+          $user -> save();
+          return redirect()->route('user.index');
         }
     }
 
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         $user = User::findOrFail($id);
-        if($user -> delete()) {
+
+        if($request->is('api/*')) {
+          if($user -> delete()) {
             return new UserResource($user);
-        }
+        }    
+        } else {
+          // return redirect()->route('products.index')
+          // ->with('success','Treinamento Apagado com sucesso');
+          $user -> delete();
+          return redirect()->route('user.index');
+      }
     }
 }

@@ -84,30 +84,25 @@ class MovieController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         $movie = Movie::findOrFail($id);
-        return new MovieResource($movie);
+
+        if($request->is('api/*')) {
+          return new MovieResource($movie);
+      } else {
+          return view('movieshow',compact('movie'));
+      }
+
     }
 
-    // /**
-    //  * Show the form for editing the specified resource.
-    //  *
-    //  * @param  int  $id
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function edit($id)
-    // {
-    //     //
-    // }
+    public function edit($id)
+    {
+      $movie = Movie::findOrFail($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+      return view('editmovie',compact('movie'));
+    }
+
     public function update(Request $request, $id)
     {
         $movie = Movie::findOrFail($request->id);
@@ -120,8 +115,14 @@ class MovieController extends Controller
         $movie->genre_id = $request->input('genre_id');
         $movie->url = $request->input('url');
 
-        if($movie -> save()) {
-            return new MovieResource($movie);
+        if($request->is('api/*')) {
+          if($movie -> save()) {
+             return new MovieResource($movie);
+          }
+        }
+        else {
+          $movie -> save();
+          return redirect()->route('movie.index');
         }
     }
 
@@ -131,11 +132,19 @@ class MovieController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         $movie = Movie::findOrFail($id);
-        if($movie -> delete()) {
+
+        if($request->is('api/*')) {
+          if($movie -> delete()) {
             return new MovieResource($movie);
-        }
+          }      
+        } else {
+          // return redirect()->route('products.index')
+          // ->with('success','Treinamento Apagado com sucesso');
+          $movie -> delete();
+          return redirect()->route('movie.index');
+      }
     }
 }

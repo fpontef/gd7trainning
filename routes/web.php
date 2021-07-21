@@ -21,7 +21,7 @@ Broadcast::routes(['middleware' => 'web']);
 //     return $request->user();
 // });
 
-/* DASHBOARD */
+/* SESSION VIEWER */
 Route::get('/session', function () {
      return session()->all();
 });
@@ -89,4 +89,7 @@ Route::group(['middleware' => 'web-admin'], function() {
     // Delete movie
     Route::delete('movie/{id}', [MovieController::class, 'destroy']);
 
+
+    Route::resource('movie', MovieController::class);
+    Route::resource('user', UserController::class);
 });
